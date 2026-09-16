@@ -155,8 +155,16 @@ const themes = {
     purple: "#955b7d",
     cyan: "#397864",
     codeBackground: "#2d353b",
+    codeHeader: "#343f44",
     codeForeground: "#d3c6aa",
-    codeBorder: "#4f5b58"
+    codeMuted: "#859289",
+    codeBorder: "#4f5b58",
+    codeRed: "#e67e80",
+    codeGreen: "#a7c080",
+    codeYellow: "#dbbc7f",
+    codeBlue: "#7fbbb3",
+    codePurple: "#d699b6",
+    codeCyan: "#83c092"
   },
 
   "nord-light": {
@@ -180,8 +188,16 @@ const themes = {
     purple: "#745d88",
     cyan: "#4e7a7a",
     codeBackground: "#2e3440",
+    codeHeader: "#3b4252",
     codeForeground: "#d8dee9",
-    codeBorder: "#4c566a"
+    codeMuted: "#7b88a1",
+    codeBorder: "#4c566a",
+    codeRed: "#bf616a",
+    codeGreen: "#a3be8c",
+    codeYellow: "#ebcb8b",
+    codeBlue: "#81a1c1",
+    codePurple: "#b48ead",
+    codeCyan: "#88c0d0"
   }
 };
 
