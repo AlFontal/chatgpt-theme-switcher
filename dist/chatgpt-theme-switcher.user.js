@@ -666,7 +666,10 @@ const LEGACY_MARKER_CLASSES = [
   "af-code-frame",
   "af-code-header",
   "af-code-body",
-  "af-code-pre"
+  "af-code-pre",
+  "af-permission-dialog",
+  "af-permission-primary",
+  "af-permission-secondary"
 ];
 
 function installUIStyle() {
@@ -711,13 +714,6 @@ function findCodeSurface(viewer) {
 function markCodeBlocks() {
   if (getCurrentThemeId() === "chatgpt-default") return;
 
-  /*
-   * Current ChatGPT code blocks use a CodeMirror viewer with id
-   * `code-block-viewer`. The themed surface is the nearest ancestor whose
-   * Tailwind class defines --code-block-surface. This is much narrower than
-   * the old rounded-container heuristic, which could accidentally mark an
-   * entire assistant response as a code block.
-   */
   for (const viewer of document.querySelectorAll("#code-block-viewer")) {
     const surface = findCodeSurface(viewer);
     if (!surface) continue;
@@ -729,13 +725,6 @@ function markCodeBlocks() {
       frame.classList.add("af-code-frame");
     }
 
-    /*
-     * There are currently two header layouts:
-     *  - compact blocks: an absolute copy-button container
-     *  - labelled blocks: a sticky language + copy-button container
-     * In both cases the header is a direct child of the code surface, contains
-     * the Copy button, and does not contain the CodeMirror viewer.
-     */
     const header = [...surface.children].find(child =>
       Boolean(child.querySelector('button[aria-label="Copy"]')) &&
       !child.querySelector("#code-block-viewer")
@@ -745,10 +734,37 @@ function markCodeBlocks() {
   }
 }
 
+function markPermissionDialogs() {
+  if (getCurrentThemeId() === "chatgpt-default") return;
+
+  for (const dialog of document.querySelectorAll('[role="dialog"], [role="alertdialog"]')) {
+    const text = dialog.textContent || "";
+    const isPermissionDialog =
+      text.includes("Allow ChatGPT to use") ||
+      text.includes("Allow once") ||
+      text.includes("Always allow");
+
+    if (!isPermissionDialog) continue;
+
+    dialog.classList.add("af-permission-dialog");
+
+    for (const button of dialog.querySelectorAll("button")) {
+      const label = (button.textContent || "").trim();
+
+      if (/^Allow once$/i.test(label)) {
+        button.classList.add("af-permission-primary");
+      } else if (/^(Always allow|Deny)$/i.test(label)) {
+        button.classList.add("af-permission-secondary");
+      }
+    }
+  }
+}
+
 function refreshDynamicThemeMarkers() {
   clearDynamicThemeMarkers();
   if (getCurrentThemeId() === "chatgpt-default") return;
   markCodeBlocks();
+  markPermissionDialogs();
 }
 
 function applyTheme(themeId) {
