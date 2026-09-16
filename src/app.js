@@ -113,6 +113,59 @@ function markUserMessageBubbles() {
   }
 }
 
+function markCodeBlocks() {
+  if (getCurrentThemeId() === "chatgpt-default") return;
+
+  for (const pre of document.querySelectorAll("pre")) {
+    pre.classList.add("af-code-pre");
+
+    let container = pre.parentElement;
+    let best = null;
+
+    for (let depth = 0; container && depth < 6; depth += 1) {
+      if (
+        container.closest('[data-message-author-role]') &&
+        container.querySelector("pre") === pre
+      ) {
+        const style = getComputedStyle(container);
+        const radius = numericRadius(style);
+        const hasHeaderLikeChild = [...container.children].some(child => {
+          if (child === pre) return false;
+          const text = child.textContent?.trim() || "";
+          const hasButton = Boolean(child.querySelector("button"));
+          return hasButton || /^(bash|javascript|typescript|python|json|css|html|sql|r|shell|text)/i.test(text);
+        });
+
+        if (radius >= 6 || hasHeaderLikeChild) best = container;
+      }
+
+      container = container.parentElement;
+    }
+
+    const block = best || pre.parentElement;
+    if (!block) continue;
+
+    block.classList.add("af-code-block");
+
+    let body = pre.parentElement;
+    while (body && body !== block && body.parentElement !== block) {
+      body = body.parentElement;
+    }
+
+    if (body && body !== block) body.classList.add("af-code-body");
+
+    const headerCandidates = [...block.children].filter(child => {
+      if (child === body || child === pre || child.contains(pre)) return false;
+      const text = child.textContent?.trim() || "";
+      return Boolean(child.querySelector("button")) || text.length < 80;
+    });
+
+    if (headerCandidates.length) {
+      headerCandidates[0].classList.add("af-code-header");
+    }
+  }
+}
+
 function markComposerGradient() {
   if (getCurrentThemeId() === "chatgpt-default") return;
 
@@ -123,21 +176,32 @@ function markComposerGradient() {
   for (let depth = 0; node && depth < 10; depth += 1) {
     if (node === document.body || node === document.documentElement) break;
 
-    const image = getComputedStyle(node).backgroundImage || "";
+    const styles = getComputedStyle(node);
+    const image = styles.backgroundImage || "";
+
     if (image !== "none" && image.toLowerCase().includes("gradient")) {
       node.classList.add("af-composer-gradient");
     }
+
+    if (depth < 3) node.classList.add("af-composer-shell");
     node = node.parentElement;
   }
 }
 
 function clearDynamicThemeMarkers() {
-  document.querySelectorAll(".af-user-message-bubble").forEach(element => {
-    element.classList.remove("af-user-message-bubble");
-  });
-  document.querySelectorAll(".af-composer-gradient").forEach(element => {
-    element.classList.remove("af-composer-gradient");
-  });
+  for (const className of [
+    "af-user-message-bubble",
+    "af-composer-gradient",
+    "af-composer-shell",
+    "af-code-block",
+    "af-code-header",
+    "af-code-body",
+    "af-code-pre"
+  ]) {
+    document.querySelectorAll(`.${className}`).forEach(element => {
+      element.classList.remove(className);
+    });
+  }
 }
 
 function refreshDynamicThemeMarkers() {
@@ -146,6 +210,7 @@ function refreshDynamicThemeMarkers() {
     return;
   }
   markUserMessageBubbles();
+  markCodeBlocks();
   markComposerGradient();
 }
 
