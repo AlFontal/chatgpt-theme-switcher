@@ -7,6 +7,17 @@ const UI_STYLE_ID = "alfontal-chatgpt-theme-ui-style";
 const THEME_BUTTON_ID = "alfontal-theme-button";
 const THEME_MENU_ID = "alfontal-theme-menu";
 
+const LEGACY_MARKER_CLASSES = [
+  "af-user-message-bubble",
+  "af-composer-gradient",
+  "af-composer-shell",
+  "af-code-block",
+  "af-code-frame",
+  "af-code-header",
+  "af-code-body",
+  "af-code-pre"
+];
+
 function installUIStyle() {
   if (document.getElementById(UI_STYLE_ID)) return;
 
@@ -21,6 +32,72 @@ function installUIStyle() {
 
 function getCurrentThemeId() {
   return localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;
+}
+
+function clearDynamicThemeMarkers() {
+  for (const className of LEGACY_MARKER_CLASSES) {
+    document.querySelectorAll(`.${className}`).forEach(element => {
+      element.classList.remove(className);
+    });
+  }
+}
+
+function findCodeSurface(viewer) {
+  let node = viewer.parentElement;
+
+  while (node && node !== document.body) {
+    const isCodeSurface = [...node.classList].some(className =>
+      className.includes("--code-block-surface")
+    );
+
+    if (isCodeSurface) return node;
+    node = node.parentElement;
+  }
+
+  return null;
+}
+
+function markCodeBlocks() {
+  if (getCurrentThemeId() === "chatgpt-default") return;
+
+  /*
+   * Current ChatGPT code blocks use a CodeMirror viewer with id
+   * `code-block-viewer`. The themed surface is the nearest ancestor whose
+   * Tailwind class defines --code-block-surface. This is much narrower than
+   * the old rounded-container heuristic, which could accidentally mark an
+   * entire assistant response as a code block.
+   */
+  for (const viewer of document.querySelectorAll("#code-block-viewer")) {
+    const surface = findCodeSurface(viewer);
+    if (!surface) continue;
+
+    surface.classList.add("af-code-block");
+
+    const frame = surface.parentElement;
+    if (frame?.classList.contains("border-token-border-light")) {
+      frame.classList.add("af-code-frame");
+    }
+
+    /*
+     * There are currently two header layouts:
+     *  - compact blocks: an absolute copy-button container
+     *  - labelled blocks: a sticky language + copy-button container
+     * In both cases the header is a direct child of the code surface, contains
+     * the Copy button, and does not contain the CodeMirror viewer.
+     */
+    const header = [...surface.children].find(child =>
+      Boolean(child.querySelector('button[aria-label="Copy"]')) &&
+      !child.querySelector("#code-block-viewer")
+    );
+
+    header?.classList.add("af-code-header");
+  }
+}
+
+function refreshDynamicThemeMarkers() {
+  clearDynamicThemeMarkers();
+  if (getCurrentThemeId() === "chatgpt-default") return;
+  markCodeBlocks();
 }
 
 function applyTheme(themeId) {
@@ -46,172 +123,6 @@ function applyTheme(themeId) {
   localStorage.setItem(STORAGE_KEY, safeThemeId);
   refreshDynamicThemeMarkers();
   updateThemeMenuSelection();
-}
-
-function isTransparentColor(color) {
-  return !color || color === "transparent" || color === "rgba(0, 0, 0, 0)";
-}
-
-function numericRadius(style) {
-  const values = [
-    style.borderTopLeftRadius,
-    style.borderTopRightRadius,
-    style.borderBottomLeftRadius,
-    style.borderBottomRightRadius
-  ];
-  return Math.max(
-    ...values.map(value => {
-      const n = parseFloat(value);
-      return Number.isFinite(n) ? n : 0;
-    })
-  );
-}
-
-function markUserMessageBubbles() {
-  if (getCurrentThemeId() === "chatgpt-default") return;
-
-  const messages = document.querySelectorAll('[data-message-author-role="user"]');
-
-  for (const message of messages) {
-    const knownSurface = message.querySelector(".bg-token-message-surface");
-    if (knownSurface) {
-      knownSurface.classList.add("af-user-message-bubble");
-      continue;
-    }
-
-    const textElement =
-      message.querySelector(".whitespace-pre-wrap") ||
-      message.querySelector('[class*="whitespace-pre-wrap"]');
-
-    if (!textElement) continue;
-
-    let node = textElement.parentElement;
-    let roundedFallback = null;
-
-    for (let depth = 0; node && depth < 8; depth += 1) {
-      if (node === message) break;
-
-      const style = getComputedStyle(node);
-      const radius = numericRadius(style);
-
-      if (radius >= 12) {
-        roundedFallback ||= node;
-        const hasBackgroundImage =
-          style.backgroundImage && style.backgroundImage !== "none";
-
-        if (!isTransparentColor(style.backgroundColor) || hasBackgroundImage) {
-          node.classList.add("af-user-message-bubble");
-          roundedFallback = null;
-          break;
-        }
-      }
-
-      node = node.parentElement;
-    }
-
-    roundedFallback?.classList.add("af-user-message-bubble");
-  }
-}
-
-function markCodeBlocks() {
-  if (getCurrentThemeId() === "chatgpt-default") return;
-
-  for (const pre of document.querySelectorAll("pre")) {
-    pre.classList.add("af-code-pre");
-
-    let container = pre.parentElement;
-    let best = null;
-
-    for (let depth = 0; container && depth < 6; depth += 1) {
-      if (
-        container.closest('[data-message-author-role]') &&
-        container.querySelector("pre") === pre
-      ) {
-        const style = getComputedStyle(container);
-        const radius = numericRadius(style);
-        const hasHeaderLikeChild = [...container.children].some(child => {
-          if (child === pre) return false;
-          const text = child.textContent?.trim() || "";
-          const hasButton = Boolean(child.querySelector("button"));
-          return hasButton || /^(bash|javascript|typescript|python|json|css|html|sql|r|shell|text)/i.test(text);
-        });
-
-        if (radius >= 6 || hasHeaderLikeChild) best = container;
-      }
-
-      container = container.parentElement;
-    }
-
-    const block = best || pre.parentElement;
-    if (!block) continue;
-
-    block.classList.add("af-code-block");
-
-    let body = pre.parentElement;
-    while (body && body !== block && body.parentElement !== block) {
-      body = body.parentElement;
-    }
-
-    if (body && body !== block) body.classList.add("af-code-body");
-
-    const headerCandidates = [...block.children].filter(child => {
-      if (child === body || child === pre || child.contains(pre)) return false;
-      const text = child.textContent?.trim() || "";
-      return Boolean(child.querySelector("button")) || text.length < 80;
-    });
-
-    if (headerCandidates.length) {
-      headerCandidates[0].classList.add("af-code-header");
-    }
-  }
-}
-
-function markComposerGradient() {
-  if (getCurrentThemeId() === "chatgpt-default") return;
-
-  const composer = document.querySelector('[data-composer-surface="true"]');
-  if (!composer) return;
-
-  let node = composer.parentElement;
-  for (let depth = 0; node && depth < 10; depth += 1) {
-    if (node === document.body || node === document.documentElement) break;
-
-    const styles = getComputedStyle(node);
-    const image = styles.backgroundImage || "";
-
-    if (image !== "none" && image.toLowerCase().includes("gradient")) {
-      node.classList.add("af-composer-gradient");
-    }
-
-    if (depth < 3) node.classList.add("af-composer-shell");
-    node = node.parentElement;
-  }
-}
-
-function clearDynamicThemeMarkers() {
-  for (const className of [
-    "af-user-message-bubble",
-    "af-composer-gradient",
-    "af-composer-shell",
-    "af-code-block",
-    "af-code-header",
-    "af-code-body",
-    "af-code-pre"
-  ]) {
-    document.querySelectorAll(`.${className}`).forEach(element => {
-      element.classList.remove(className);
-    });
-  }
-}
-
-function refreshDynamicThemeMarkers() {
-  if (getCurrentThemeId() === "chatgpt-default") {
-    clearDynamicThemeMarkers();
-    return;
-  }
-  markUserMessageBubbles();
-  markCodeBlocks();
-  markComposerGradient();
 }
 
 function createThemeOption(themeId, label) {
