@@ -305,7 +305,16 @@ function uiCSS({ themeButtonId, themeMenuId }) {
 
 function themeCSS(t) {
   const codeForeground = t.codeForeground || t.text;
+  const codeMuted = t.codeMuted || t.muted;
   const codeBorder = t.codeBorder || t.border;
+  const codeHeader =
+    t.codeHeader || `color-mix(in srgb, ${t.codeBackground} 88%, #000 12%)`;
+  const codeRed = t.codeRed || t.red;
+  const codeGreen = t.codeGreen || t.green;
+  const codeYellow = t.codeYellow || t.yellow;
+  const codeBlue = t.codeBlue || t.blue;
+  const codePurple = t.codePurple || t.purple;
+  const codeCyan = t.codeCyan || t.cyan;
 
   return `
 :root {
@@ -328,8 +337,16 @@ function themeCSS(t) {
   --af-purple: ${t.purple};
   --af-cyan: ${t.cyan};
   --af-code-background: ${t.codeBackground};
+  --af-code-header: ${codeHeader};
   --af-code-foreground: ${codeForeground};
+  --af-code-muted: ${codeMuted};
   --af-code-border: ${codeBorder};
+  --af-code-red: ${codeRed};
+  --af-code-green: ${codeGreen};
+  --af-code-yellow: ${codeYellow};
+  --af-code-blue: ${codeBlue};
+  --af-code-purple: ${codePurple};
+  --af-code-cyan: ${codeCyan};
 
   --main-surface-primary: var(--af-main) !important;
   --main-surface-secondary: var(--af-surface) !important;
@@ -403,14 +420,15 @@ textarea, [contenteditable="true"] {
 }
 textarea::placeholder { color: var(--af-muted) !important; }
 
-.af-composer-gradient {
-  background-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    color-mix(in srgb, var(--af-main) 80%, transparent) 24%,
-    var(--af-main) 58%,
-    var(--af-main) 100%
-  ) !important;
+/* ChatGPT's stock footer fade is tuned for its own dark background. It looks
+ * especially bad on light themes, so the detected composer wrappers are made
+ * into a flat themed surface instead. */
+.af-composer-gradient,
+.af-composer-shell {
+  background: var(--af-main) !important;
+  background-color: var(--af-main) !important;
+  background-image: none !important;
+  box-shadow: none !important;
 }
 
 [role="menu"], [role="listbox"], [role="dialog"] {
@@ -428,13 +446,68 @@ input, select {
 
 .border-token-border-light, .border-token-border-medium { border-color: var(--af-border) !important; }
 
-/* Code blocks deliberately use their own surface and foreground.
- * Light application themes keep a dark editor-like code panel so ChatGPT's
- * syntax highlighting remains readable instead of becoming pastel-on-pastel. */
-pre,
-pre > div,
-[class*="code-block"],
-[class*="codeblock"] {
+/* -------------------------------------------------------------------------
+ * Code blocks
+ * -------------------------------------------------------------------------
+ * JS marks the actual outer code container, header and body. Keeping the
+ * selectors scoped to those markers avoids recolouring every nested div and
+ * fixes the double/giant rounded-corner effect seen in light themes.
+ */
+.af-code-block {
+  overflow: hidden !important;
+  border: 1px solid var(--af-code-border) !important;
+  border-radius: 12px !important;
+  background: var(--af-code-background) !important;
+  color: var(--af-code-foreground) !important;
+}
+
+.af-code-block .af-code-header {
+  background: var(--af-code-header) !important;
+  background-color: var(--af-code-header) !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--af-code-border) !important;
+  border-radius: 0 !important;
+  color: var(--af-code-foreground) !important;
+  opacity: 1 !important;
+}
+
+.af-code-block .af-code-header,
+.af-code-block .af-code-header *,
+.af-code-block .af-code-header button,
+.af-code-block .af-code-header .text-token-text-secondary,
+.af-code-block .af-code-header .text-token-text-tertiary {
+  color: var(--af-code-foreground) !important;
+  opacity: 1 !important;
+}
+
+.af-code-block .af-code-header svg,
+.af-code-block .af-code-header svg * {
+  color: var(--af-code-foreground) !important;
+  stroke: currentColor !important;
+}
+
+.af-code-block .af-code-body,
+.af-code-block .af-code-pre,
+.af-code-block pre {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: var(--af-code-background) !important;
+  background-color: var(--af-code-background) !important;
+  color: var(--af-code-foreground) !important;
+  box-shadow: none !important;
+}
+
+.af-code-block .af-code-body > div,
+.af-code-block pre > div,
+.af-code-block pre [class*="bg-token-main-surface"],
+.af-code-block pre [class*="bg-black"] {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Fallback while the DOM marker is being attached. */
+pre {
   background: var(--af-code-background) !important;
   background-color: var(--af-code-background) !important;
   border-color: var(--af-code-border) !important;
@@ -443,93 +516,73 @@ pre > div,
 
 pre code,
 pre code *,
-[class*="code-block"] code,
-[class*="code-block"] code * {
+.af-code-block code,
+.af-code-block code * {
   background-color: transparent !important;
 }
 
-pre > div:first-child,
-pre [class*="border-b"],
-[class*="code-block"] > div:first-child,
-[class*="code-block"] [class*="border-b"],
-[class*="codeblock"] > div:first-child {
-  background: color-mix(in srgb, var(--af-code-background) 88%, #000 12%) !important;
-  background-color: color-mix(in srgb, var(--af-code-background) 88%, #000 12%) !important;
-  border-color: var(--af-code-border) !important;
-  color: var(--af-code-foreground) !important;
-}
-
-pre [class*="bg-token-main-surface"],
-pre [class*="bg-black"],
-[class*="code-block"] [class*="bg-token-main-surface"],
-[class*="code-block"] [class*="bg-black"] {
-  background: var(--af-code-background) !important;
-  background-color: var(--af-code-background) !important;
-}
-
-/* Header controls and labels should not inherit washed-out page colours. */
-pre button,
-pre svg,
-[class*="code-block"] button,
-[class*="code-block"] svg {
-  color: var(--af-code-foreground) !important;
-  stroke: currentColor !important;
-}
-
-/* Keep syntax tokens readable. ChatGPT/Prism/Shiki class names vary, so use
- * broad token families with theme semantic colours rather than one renderer. */
+/* Syntax colours use a dedicated code palette. Light UI themes therefore get
+ * bright syntax colours suitable for their deliberately dark code surfaces. */
 pre .token.comment,
 pre .token.prolog,
 pre .token.doctype,
 pre .token.cdata,
-pre [class*="comment"] {
-  color: color-mix(in srgb, var(--af-code-foreground) 55%, var(--af-code-background)) !important;
+pre [class*="comment"],
+.af-code-block [class*="comment"] {
+  color: var(--af-code-muted) !important;
 }
 
 pre .token.keyword,
 pre .token.selector,
 pre .token.important,
-pre [class*="keyword"] {
-  color: var(--af-purple) !important;
+pre [class*="keyword"],
+.af-code-block [class*="keyword"] {
+  color: var(--af-code-purple) !important;
 }
 
 pre .token.string,
 pre .token.char,
 pre .token.attr-value,
-pre [class*="string"] {
-  color: var(--af-green) !important;
+pre [class*="string"],
+.af-code-block [class*="string"] {
+  color: var(--af-code-green) !important;
 }
 
 pre .token.number,
 pre .token.boolean,
 pre .token.constant,
-pre [class*="number"] {
-  color: var(--af-yellow) !important;
+pre [class*="number"],
+.af-code-block [class*="number"] {
+  color: var(--af-code-yellow) !important;
 }
 
 pre .token.function,
 pre .token.class-name,
-pre [class*="function"] {
-  color: var(--af-blue) !important;
+pre [class*="function"],
+.af-code-block [class*="function"] {
+  color: var(--af-code-blue) !important;
 }
 
 pre .token.operator,
 pre .token.punctuation,
-pre [class*="punctuation"] {
+pre [class*="punctuation"],
+.af-code-block [class*="punctuation"] {
   color: var(--af-code-foreground) !important;
 }
 
 pre .token.variable,
 pre .token.property,
 pre .token.tag,
-pre [class*="variable"] {
-  color: var(--af-cyan) !important;
+pre [class*="variable"],
+.af-code-block [class*="variable"] {
+  color: var(--af-code-cyan) !important;
 }
 
 pre .token.regex,
 pre .token.builtin,
-pre [class*="builtin"] {
-  color: var(--af-red) !important;
+pre [class*="builtin"],
+.af-code-block [class*="builtin"] {
+  color: var(--af-code-red) !important;
 }
 
 :not(pre) > code {
