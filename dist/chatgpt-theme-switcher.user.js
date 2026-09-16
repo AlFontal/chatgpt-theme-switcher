@@ -288,6 +288,9 @@ function uiCSS({ themeButtonId, themeMenuId }) {
 }
 
 function themeCSS(t) {
+  const codeForeground = t.codeForeground || t.text;
+  const codeBorder = t.codeBorder || t.border;
+
   return `
 :root {
   color-scheme: ${t.mode};
@@ -309,6 +312,8 @@ function themeCSS(t) {
   --af-purple: ${t.purple};
   --af-cyan: ${t.cyan};
   --af-code-background: ${t.codeBackground};
+  --af-code-foreground: ${codeForeground};
+  --af-code-border: ${codeBorder};
 
   --main-surface-primary: var(--af-main) !important;
   --main-surface-secondary: var(--af-surface) !important;
@@ -407,25 +412,113 @@ input, select {
 
 .border-token-border-light, .border-token-border-medium { border-color: var(--af-border) !important; }
 
+/* Code blocks deliberately use their own surface and foreground.
+ * Light application themes keep a dark editor-like code panel so ChatGPT's
+ * syntax highlighting remains readable instead of becoming pastel-on-pastel. */
 pre,
 pre > div,
 [class*="code-block"],
 [class*="codeblock"] {
+  background: var(--af-code-background) !important;
   background-color: var(--af-code-background) !important;
-  border-color: var(--af-border) !important;
+  border-color: var(--af-code-border) !important;
+  color: var(--af-code-foreground) !important;
 }
+
+pre code,
+pre code *,
+[class*="code-block"] code,
+[class*="code-block"] code * {
+  background-color: transparent !important;
+}
+
+pre > div:first-child,
+pre [class*="border-b"],
+[class*="code-block"] > div:first-child,
+[class*="code-block"] [class*="border-b"],
+[class*="codeblock"] > div:first-child {
+  background: color-mix(in srgb, var(--af-code-background) 88%, #000 12%) !important;
+  background-color: color-mix(in srgb, var(--af-code-background) 88%, #000 12%) !important;
+  border-color: var(--af-code-border) !important;
+  color: var(--af-code-foreground) !important;
+}
+
 pre [class*="bg-token-main-surface"],
-pre [class*="bg-black"] { background-color: var(--af-code-background) !important; }
-pre code { background-color: transparent !important; }
+pre [class*="bg-black"],
+[class*="code-block"] [class*="bg-token-main-surface"],
+[class*="code-block"] [class*="bg-black"] {
+  background: var(--af-code-background) !important;
+  background-color: var(--af-code-background) !important;
+}
+
+/* Header controls and labels should not inherit washed-out page colours. */
+pre button,
+pre svg,
+[class*="code-block"] button,
+[class*="code-block"] svg {
+  color: var(--af-code-foreground) !important;
+  stroke: currentColor !important;
+}
+
+/* Keep syntax tokens readable. ChatGPT/Prism/Shiki class names vary, so use
+ * broad token families with theme semantic colours rather than one renderer. */
+pre .token.comment,
+pre .token.prolog,
+pre .token.doctype,
+pre .token.cdata,
+pre [class*="comment"] {
+  color: color-mix(in srgb, var(--af-code-foreground) 55%, var(--af-code-background)) !important;
+}
+
+pre .token.keyword,
+pre .token.selector,
+pre .token.important,
+pre [class*="keyword"] {
+  color: var(--af-purple) !important;
+}
+
+pre .token.string,
+pre .token.char,
+pre .token.attr-value,
+pre [class*="string"] {
+  color: var(--af-green) !important;
+}
+
+pre .token.number,
+pre .token.boolean,
+pre .token.constant,
+pre [class*="number"] {
+  color: var(--af-yellow) !important;
+}
+
+pre .token.function,
+pre .token.class-name,
+pre [class*="function"] {
+  color: var(--af-blue) !important;
+}
+
+pre .token.operator,
+pre .token.punctuation,
+pre [class*="punctuation"] {
+  color: var(--af-code-foreground) !important;
+}
+
+pre .token.variable,
+pre .token.property,
+pre .token.tag,
+pre [class*="variable"] {
+  color: var(--af-cyan) !important;
+}
+
+pre .token.regex,
+pre .token.builtin,
+pre [class*="builtin"] {
+  color: var(--af-red) !important;
+}
+
 :not(pre) > code {
   background-color: var(--af-surface) !important;
   color: var(--af-text) !important;
-}
-
-pre [class*="border-b"],
-[class*="code-block"] [class*="border-b"] {
-  background-color: color-mix(in srgb, var(--af-code-background) 88%, var(--af-text) 12%) !important;
-  border-color: var(--af-border) !important;
 }
 
 table { border-color: var(--af-border) !important; }
