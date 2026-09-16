@@ -154,7 +154,9 @@ const themes = {
     blue: "#3d7190",
     purple: "#955b7d",
     cyan: "#397864",
-    codeBackground: "#c6c0aa"
+    codeBackground: "#2d353b",
+    codeForeground: "#d3c6aa",
+    codeBorder: "#4f5b58"
   },
 
   "nord-light": {
@@ -177,7 +179,9 @@ const themes = {
     blue: "#4c6f91",
     purple: "#745d88",
     cyan: "#4e7a7a",
-    codeBackground: "#b8c1c8"
+    codeBackground: "#2e3440",
+    codeForeground: "#d8dee9",
+    codeBorder: "#4c566a"
   }
 };
 
