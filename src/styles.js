@@ -17,12 +17,26 @@ export function uiCSS({ themeButtonId, themeMenuId }) {
   background: var(--af-surface, #2f2f2f) !important;
   color: var(--af-accent, #fff) !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-  font-size: 20px !important;
+  font-size: 0 !important;
   line-height: 1 !important;
   cursor: pointer !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, .30) !important;
   opacity: .78 !important;
   transition: opacity 120ms ease, transform 120ms ease, background-color 120ms ease !important;
+}
+#${themeButtonId}::before {
+  content: "" !important;
+  width: 16px !important;
+  height: 16px !important;
+  border: 1px solid var(--af-border, #666) !important;
+  border-radius: 999px !important;
+  background: conic-gradient(
+    var(--af-accent, #10a37f) 0 25%,
+    var(--af-text-secondary, #b4b4b4) 25% 50%,
+    var(--af-surface-2, #424242) 50% 75%,
+    var(--af-main, #212121) 75% 100%
+  ) !important;
+  box-shadow: 0 0 0 2px var(--af-surface, #2f2f2f) !important;
 }
 #${themeButtonId}:hover {
   opacity: 1 !important;
@@ -136,11 +150,24 @@ export function themeCSS(t) {
   --composer-surface-primary: var(--af-surface) !important;
   --message-surface: var(--af-surface-2) !important;
   --message-surface-hover: var(--af-hover) !important;
+  --bg-primary: var(--af-surface) !important;
+  --bg-secondary: var(--af-surface-2) !important;
+  --bg-tertiary: var(--af-hover) !important;
+  --bg-elevated-primary: var(--af-surface) !important;
+  --bg-elevated-secondary: var(--af-surface-2) !important;
+  --bg-tooltip: var(--af-surface-2) !important;
   --text-primary: var(--af-text) !important;
   --text-secondary: var(--af-text-secondary) !important;
   --text-tertiary: var(--af-muted) !important;
+  --icon-tertiary: var(--af-muted) !important;
+  --border-default: var(--af-border) !important;
+  --border-sharp: var(--af-border) !important;
   --border-light: var(--af-border) !important;
   --border-medium: var(--af-border) !important;
+  --interactive-bg-secondary-hover: var(--af-hover) !important;
+  --interactive-bg-tertiary-default: var(--af-surface-2) !important;
+  --interactive-bg-tertiary-selected: var(--af-surface-2) !important;
+  --interactive-bg-tertiary-inactive: var(--af-surface-2) !important;
   --link: var(--af-accent) !important;
 }
 
@@ -154,6 +181,10 @@ html, body, main, #thread, #page-header {
 .bg-token-sidebar-surface-primary { background-color: var(--af-sidebar) !important; }
 .bg-token-sidebar-surface-secondary { background-color: var(--af-surface) !important; }
 .bg-token-sidebar-surface-tertiary { background-color: var(--af-hover) !important; }
+.bg-token-bg-primary,
+[class*="bg-token-bg-primary/"] { background-color: var(--af-surface) !important; }
+.bg-token-bg-secondary { background-color: var(--af-surface-2) !important; }
+.bg-token-bg-tertiary { background-color: var(--af-hover) !important; }
 
 nav { background-color: var(--af-sidebar) !important; border-color: var(--af-border) !important; }
 nav a, nav button { color: var(--af-text) !important; }
@@ -179,6 +210,10 @@ nav [aria-current="page"], nav [data-active="true"] { background-color: var(--af
 .text-token-text-tertiary { color: var(--af-muted) !important; }
 [data-message-author-role="assistant"], [data-message-author-role="user"], .markdown, .prose { color: var(--af-text) !important; }
 .markdown strong, .prose strong, .markdown b, .prose b { color: var(--af-text) !important; }
+.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6,
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  color: var(--af-text) !important;
+}
 .markdown a, .prose a { color: var(--af-accent) !important; }
 
 .user-message-bubble-color,
@@ -204,6 +239,15 @@ nav [aria-current="page"], nav [data-active="true"] { background-color: var(--af
 #conversation-header-actions [data-testid="share-chat-button"]:hover,
 #conversation-header-actions [data-testid="conversation-options-button"]:hover { background: var(--af-hover) !important; color: var(--af-text) !important; }
 
+.translucent-surface {
+  background: var(--af-surface) !important;
+  background-color: var(--af-surface) !important;
+  border-color: var(--af-border) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
 /* Work-mode segmented control, detected from its Chat/Work controls. */
 .af-mode-switcher {
   background: var(--af-surface) !important;
@@ -223,15 +267,24 @@ nav [aria-current="page"], nav [data-active="true"] { background-color: var(--af
   color: var(--af-text) !important;
 }
 .af-mode-switcher .af-mode-option.af-mode-active {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--af-text) !important;
+}
+.af-mode-switcher > div:first-child {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+.af-mode-switcher [data-tpp-toggle-highlight] > div {
   background: var(--af-surface-2) !important;
   background-color: var(--af-surface-2) !important;
-  color: var(--af-text) !important;
+  border-color: var(--af-border) !important;
 }
 
 /* Work-mode toolbar below the composer: Project / Files / Plugins / desktop. */
 .af-work-toolbar {
-  background: var(--af-surface) !important;
-  background-color: var(--af-surface) !important;
+  background: var(--af-surface-2) !important;
+  background-color: var(--af-surface-2) !important;
   border-color: var(--af-border) !important;
   box-shadow: none !important;
   color: var(--af-text-secondary) !important;
@@ -258,6 +311,32 @@ nav [aria-current="page"], nav [data-active="true"] { background-color: var(--af
 [data-composer-surface="true"] > div { background-image: none !important; }
 textarea, [contenteditable="true"] { color: var(--af-text) !important; caret-color: var(--af-accent) !important; }
 textarea::placeholder { color: var(--af-muted) !important; }
+
+button[aria-label="Start Voice"],
+button[aria-label="Send prompt"],
+button[aria-label="Stop answering"] {
+  background: var(--af-accent) !important;
+  background-color: var(--af-accent) !important;
+  color: var(--af-main) !important;
+  border-color: var(--af-accent) !important;
+}
+button[aria-label="Start Voice"]:hover,
+button[aria-label="Send prompt"]:hover,
+button[aria-label="Stop answering"]:hover { background: var(--af-accent-hover) !important; }
+
+[data-model-reasoning-effort-slider] > [data-orientation="horizontal"] > span:first-child {
+  background: var(--af-border) !important;
+}
+[data-model-reasoning-effort-slider] > [data-orientation="horizontal"] > span:first-child > [aria-hidden="true"] {
+  background: var(--af-accent) !important;
+}
+[data-model-reasoning-effort-slider] [data-selected] {
+  background: color-mix(in srgb, var(--af-main) 55%, transparent) !important;
+}
+[data-model-reasoning-effort-slider-thumb] {
+  background: var(--af-text) !important;
+  border-color: var(--af-main) !important;
+}
 
 #thread-bottom, #thread-bottom-container {
   background: var(--af-main) !important;
@@ -288,9 +367,28 @@ textarea::placeholder { color: var(--af-muted) !important; }
   color: var(--af-text) !important;
   border-color: var(--af-border) !important;
 }
+[role="tooltip"] > div {
+  background: var(--af-surface-2) !important;
+  color: var(--af-text) !important;
+  border: 1px solid var(--af-border) !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .18) !important;
+}
 [role="menuitem"]:hover, [role="option"]:hover { background-color: var(--af-hover) !important; }
 input, select { background-color: var(--af-surface) !important; color: var(--af-text) !important; border-color: var(--af-border) !important; }
-.border-token-border-light, .border-token-border-medium { border-color: var(--af-border) !important; }
+.border-token-border-default,
+.border-token-border-extra-light,
+.border-token-border-light,
+.border-token-border-medium,
+.border-token-border-heavy { border-color: var(--af-border) !important; }
+
+a[target="_blank"][class*="text-[9px]"][class*="rounded-xl"] {
+  background: var(--af-surface-2) !important;
+  color: var(--af-text-secondary) !important;
+  border-color: var(--af-border) !important;
+}
+a[target="_blank"][class*="text-[9px]"][class*="rounded-xl"] span {
+  color: inherit !important;
+}
 
 .af-code-frame { border-color: var(--af-code-border) !important; }
 .af-code-block {
@@ -338,7 +436,11 @@ input, select { background-color: var(--af-surface) !important; color: var(--af-
 :not(pre) > code { background-color: var(--af-surface) !important; color: var(--af-text) !important; }
 
 table { border-color: var(--af-border) !important; }
-th { background-color: var(--af-surface) !important; border-color: var(--af-border) !important; }
+th {
+  background-color: var(--af-surface) !important;
+  color: var(--af-text) !important;
+  border-color: var(--af-border) !important;
+}
 td { border-color: var(--af-border) !important; }
 * { scrollbar-color: var(--af-border) transparent; }
 ::-webkit-scrollbar { width: 10px; height: 10px; }

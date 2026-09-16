@@ -230,10 +230,13 @@ function markModeSwitcher() {
   const work = findInteractiveByExactText("Work");
   if (!chat || !work) return;
 
-  const container = compactAncestorFor([chat, work], {
-    maxHeight: 120,
-    maxWidth: 700
-  });
+  const radioGroup = chat.closest('[role="radiogroup"]');
+  const container = radioGroup?.contains(work)
+    ? radioGroup
+    : compactAncestorFor([chat, work], {
+        maxHeight: 120,
+        maxWidth: 700
+      });
   if (!container) return;
 
   container.classList.add("af-mode-switcher");
@@ -248,7 +251,9 @@ function markModeSwitcher() {
   const selected = [chat, work].find(element =>
     element.getAttribute("aria-selected") === "true" ||
     element.getAttribute("aria-pressed") === "true" ||
-    element.dataset.state === "active"
+    element.getAttribute("aria-checked") === "true" ||
+    element.dataset.state === "active" ||
+    element.dataset.state === "on"
   );
 
   if (selected) {
@@ -259,12 +264,20 @@ function markModeSwitcher() {
 }
 
 function markWorkToolbar() {
-  const labels = ["Project", "Files", "Plugins", "Get desktop app"];
+  const composerToolbar = document.querySelector(
+    '[data-composer-bar-placement="footer"]'
+  );
+  if (isVisible(composerToolbar)) {
+    composerToolbar.classList.add("af-work-toolbar");
+    return;
+  }
+
+  const labels = ["Project", "Files", "Get desktop app"];
   const controls = labels
     .map(findInteractiveByExactText)
     .filter(Boolean);
 
-  if (controls.length < 3) return;
+  if (controls.length < 2) return;
 
   const toolbar = compactAncestorFor(controls, {
     maxHeight: 150,
