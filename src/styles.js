@@ -189,6 +189,37 @@ nav button:hover { background-color: var(--af-hover) !important; }
 nav [aria-current="page"],
 nav [data-active="true"] { background-color: var(--af-surface-2) !important; }
 
+/* The sidebar account footer has its own surface in ChatGPT and can retain a
+ * dark-mode background even when the rest of a custom light theme is correct. */
+[data-testid="accounts-profile-button"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--af-text) !important;
+  box-shadow: none !important;
+}
+
+[data-testid="accounts-profile-button"]:hover {
+  background: var(--af-hover) !important;
+  background-color: var(--af-hover) !important;
+}
+
+[data-testid="accounts-profile-button"] *,
+[data-testid="accounts-profile-button"] .text-token-text-primary {
+  color: var(--af-text) !important;
+}
+
+[data-testid="accounts-profile-button"] .text-token-text-secondary,
+[data-testid="accounts-profile-button"] .text-token-text-tertiary {
+  color: var(--af-muted) !important;
+}
+
+[data-testid="accounts-profile-button"] svg,
+[data-testid="accounts-profile-button"] svg * {
+  color: var(--af-text-secondary) !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
 .text-token-text-primary { color: var(--af-text) !important; }
 .text-token-text-secondary { color: var(--af-text-secondary) !important; }
 .text-token-text-tertiary { color: var(--af-muted) !important; }
@@ -263,12 +294,6 @@ textarea,
 }
 textarea::placeholder { color: var(--af-muted) !important; }
 
-/*
- * The actual sticky footer is #thread-bottom-container and carries
- * Ejxyja_threadFooterContentFade in the captured build. Target the stable id,
- * remove the stock fade/pseudo-element effects, and keep the native composer
- * geometry untouched.
- */
 #thread-bottom,
 #thread-bottom-container {
   background: var(--af-main) !important;
@@ -288,9 +313,6 @@ textarea::placeholder { color: var(--af-muted) !important; }
   -webkit-mask-image: none !important;
 }
 
-/* The disclaimer has its own rounded background and a stock shadow declared
- * directly in its class list. Target the real data-testid instead of assuming
- * it lives inside #thread-bottom-container. */
 [data-testid="thread-disclaimer"] .rounded-full {
   background: transparent !important;
   background-color: transparent !important;
@@ -322,22 +344,12 @@ select {
 .border-token-border-light,
 .border-token-border-medium { border-color: var(--af-border) !important; }
 
-/* -------------------------------------------------------------------------
- * Code blocks
- * -------------------------------------------------------------------------
- * Preserve ChatGPT's native border radii, clipping and spacing. The userscript
- * only marks the exact --code-block-surface element and its frame/header.
- */
 .af-code-frame {
   border-color: var(--af-code-border) !important;
 }
 
 .af-code-block {
   --code-block-surface: var(--af-code-background) !important;
-
-  /* CodeMirror in the captured build maps generated syntax classes to these
-   * variables, so overriding the variables is both cleaner and more complete
-   * than guessing generated class names such as .ͼu/.ͼv. */
   --gray-950: var(--af-code-background) !important;
   --gray-925: var(--af-code-header) !important;
   --gray-900: var(--af-code-header) !important;
@@ -350,7 +362,6 @@ select {
   --orange-200: var(--af-code-yellow) !important;
   --green-200: var(--af-code-green) !important;
   --purple-200: var(--af-code-purple) !important;
-
   background-color: var(--af-code-background) !important;
   color: var(--af-code-foreground) !important;
 }
@@ -360,9 +371,6 @@ select {
   opacity: 1 !important;
 }
 
-/* Labelled code blocks have a sticky direct child whose inner row is the
- * language/copy header. Compact blocks only have the floating copy button, so
- * this selector leaves their background transparent. */
 .af-code-block .af-code-header > div {
   background: var(--af-code-header) !important;
   background-color: var(--af-code-header) !important;
@@ -392,7 +400,6 @@ select {
   background-color: transparent !important;
 }
 
-/* Prism-style fallback for any code renderer that does expose token classes. */
 .af-code-block .token.comment { color: var(--af-code-muted) !important; }
 .af-code-block .token.keyword { color: var(--af-code-purple) !important; }
 .af-code-block .token.string { color: var(--af-code-green) !important; }
