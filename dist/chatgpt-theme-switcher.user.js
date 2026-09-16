@@ -669,7 +669,11 @@ const LEGACY_MARKER_CLASSES = [
   "af-code-pre",
   "af-permission-dialog",
   "af-permission-primary",
-  "af-permission-secondary"
+  "af-permission-secondary",
+  "af-mode-switcher",
+  "af-mode-option",
+  "af-mode-active",
+  "af-work-toolbar"
 ];
 
 const PERMISSION_STYLE_PROPERTIES = [
@@ -814,11 +818,121 @@ function markPermissionDialogs() {
   }
 }
 
+function isVisible(element) {
+  if (!element) return false;
+  const rect = element.getBoundingClientRect();
+  const style = getComputedStyle(element);
+  return (
+    rect.width > 0 &&
+    rect.height > 0 &&
+    style.display !== "none" &&
+    style.visibility !== "hidden"
+  );
+}
+
+function findInteractiveByExactText(label) {
+  const selectors = [
+    "button",
+    '[role="button"]',
+    '[role="tab"]',
+    "a"
+  ];
+
+  return [...document.querySelectorAll(selectors.join(","))].find(element =>
+    isVisible(element) && (element.textContent || "").trim() === label
+  );
+}
+
+function nearestCommonAncestor(elements) {
+  const valid = elements.filter(Boolean);
+  if (!valid.length) return null;
+
+  let node = valid[0];
+  while (node && node !== document.documentElement) {
+    if (valid.every(element => node.contains(element))) return node;
+    node = node.parentElement;
+  }
+
+  return null;
+}
+
+function compactAncestorFor(elements, { maxHeight, maxWidth }) {
+  let node = nearestCommonAncestor(elements);
+  if (!node) return null;
+
+  while (node && node !== document.body) {
+    const rect = node.getBoundingClientRect();
+    if (
+      rect.width > 0 &&
+      rect.height > 0 &&
+      rect.height <= maxHeight &&
+      rect.width <= maxWidth
+    ) {
+      return node;
+    }
+    node = node.parentElement;
+  }
+
+  return null;
+}
+
+function markModeSwitcher() {
+  const chat = findInteractiveByExactText("Chat");
+  const work = findInteractiveByExactText("Work");
+  if (!chat || !work) return;
+
+  const container = compactAncestorFor([chat, work], {
+    maxHeight: 120,
+    maxWidth: 700
+  });
+  if (!container) return;
+
+  container.classList.add("af-mode-switcher");
+  chat.classList.add("af-mode-option");
+  work.classList.add("af-mode-option");
+
+  const workLanding = [...document.querySelectorAll("h1, h2, div")].some(element =>
+    isVisible(element) &&
+    (element.textContent || "").trim() === "What should we work on?"
+  );
+
+  const selected = [chat, work].find(element =>
+    element.getAttribute("aria-selected") === "true" ||
+    element.getAttribute("aria-pressed") === "true" ||
+    element.dataset.state === "active"
+  );
+
+  if (selected) {
+    selected.classList.add("af-mode-active");
+  } else {
+    (workLanding ? work : chat).classList.add("af-mode-active");
+  }
+}
+
+function markWorkToolbar() {
+  const labels = ["Project", "Files", "Plugins", "Get desktop app"];
+  const controls = labels
+    .map(findInteractiveByExactText)
+    .filter(Boolean);
+
+  if (controls.length < 3) return;
+
+  const toolbar = compactAncestorFor(controls, {
+    maxHeight: 150,
+    maxWidth: 1800
+  });
+  if (!toolbar) return;
+
+  toolbar.classList.add("af-work-toolbar");
+}
+
 function refreshDynamicThemeMarkers() {
   clearDynamicThemeMarkers();
   if (getCurrentThemeId() === "chatgpt-default") return;
   markCodeBlocks();
   markPermissionDialogs();
+  markModeSwitcher();
+  markWorkToolbar();
 }
 
 function applyTheme(themeId) {
