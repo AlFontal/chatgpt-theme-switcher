@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatGPT Theme Switcher
 // @namespace    https://alfontal.dev/
-// @version      1.4.4
+// @version      1.4.5
 // @description  Custom themes for ChatGPT with a persistent theme switcher.
 // @author       AlFontal
 // @match        https://chatgpt.com/*
