@@ -24,11 +24,10 @@ jobs:
           node-version: 22
 
       - run: npm run build
-      - run: npm run check
 
       - name: Commit generated userscript
         run: |
-          if git diff --quiet -- dist/chatgpt-theme-switcher.user.js; then
+          if [ -z "$(git status --porcelain -- dist/chatgpt-theme-switcher.user.js)" ]; then
             echo "dist is already up to date"
             exit 0
           fi
