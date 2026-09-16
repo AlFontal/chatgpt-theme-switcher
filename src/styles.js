@@ -24,13 +24,11 @@ export function uiCSS({ themeButtonId, themeMenuId }) {
   opacity: .78 !important;
   transition: opacity 120ms ease, transform 120ms ease, background-color 120ms ease !important;
 }
-
 #${themeButtonId}:hover {
   opacity: 1 !important;
   transform: scale(1.04) !important;
   background: var(--af-surface-2, #3b3b3b) !important;
 }
-
 #${themeMenuId} {
   position: fixed !important;
   right: 62px !important;
@@ -49,9 +47,7 @@ export function uiCSS({ themeButtonId, themeMenuId }) {
   font-size: 13px !important;
   line-height: 1.4 !important;
 }
-
 #${themeMenuId}.af-open { display: block !important; }
-
 #${themeMenuId} .af-theme-option {
   display: flex !important;
   align-items: center !important;
@@ -70,15 +66,8 @@ export function uiCSS({ themeButtonId, themeMenuId }) {
   line-height: 1.4 !important;
   cursor: pointer !important;
 }
-
-#${themeMenuId} .af-theme-option:hover {
-  background: var(--af-hover, #454545) !important;
-}
-
-#${themeMenuId} .af-theme-option.af-current {
-  background: var(--af-surface-2, #3b3b3b) !important;
-}
-
+#${themeMenuId} .af-theme-option:hover { background: var(--af-hover, #454545) !important; }
+#${themeMenuId} .af-theme-option.af-current { background: var(--af-surface-2, #3b3b3b) !important; }
 #${themeMenuId} .af-theme-dot {
   width: 8px !important;
   height: 8px !important;
@@ -86,11 +75,7 @@ export function uiCSS({ themeButtonId, themeMenuId }) {
   border-radius: 999px !important;
   background: var(--af-muted, #888) !important;
 }
-
-#${themeMenuId} .af-current .af-theme-dot {
-  background: var(--af-accent, #fff) !important;
-}
-
+#${themeMenuId} .af-current .af-theme-dot { background: var(--af-accent, #fff) !important; }
 #${themeMenuId} .af-separator {
   height: 1px !important;
   margin: 5px 4px !important;
@@ -103,8 +88,7 @@ export function themeCSS(t) {
   const codeForeground = t.codeForeground || t.text;
   const codeMuted = t.codeMuted || t.muted;
   const codeBorder = t.codeBorder || t.border;
-  const codeHeader =
-    t.codeHeader || `color-mix(in srgb, ${t.codeBackground} 88%, #000 12%)`;
+  const codeHeader = t.codeHeader || `color-mix(in srgb, ${t.codeBackground} 88%, #000 12%)`;
   const codeRed = t.codeRed || t.red;
   const codeGreen = t.codeGreen || t.green;
   const codeYellow = t.codeYellow || t.yellow;
@@ -132,7 +116,6 @@ export function themeCSS(t) {
   --af-blue: ${t.blue};
   --af-purple: ${t.purple};
   --af-cyan: ${t.cyan};
-
   --af-code-background: ${t.codeBackground};
   --af-code-header: ${codeHeader};
   --af-code-foreground: ${codeForeground};
@@ -144,7 +127,6 @@ export function themeCSS(t) {
   --af-code-blue: ${codeBlue};
   --af-code-purple: ${codePurple};
   --af-code-cyan: ${codeCyan};
-
   --main-surface-primary: var(--af-main) !important;
   --main-surface-secondary: var(--af-surface) !important;
   --main-surface-tertiary: var(--af-surface-2) !important;
@@ -162,15 +144,10 @@ export function themeCSS(t) {
   --link: var(--af-accent) !important;
 }
 
-html,
-body,
-main,
-#thread,
-#page-header {
+html, body, main, #thread, #page-header {
   background-color: var(--af-main) !important;
   color: var(--af-text) !important;
 }
-
 .bg-token-main-surface-primary { background-color: var(--af-main) !important; }
 .bg-token-main-surface-secondary { background-color: var(--af-surface) !important; }
 .bg-token-main-surface-tertiary { background-color: var(--af-surface-2) !important; }
@@ -178,72 +155,32 @@ main,
 .bg-token-sidebar-surface-secondary { background-color: var(--af-surface) !important; }
 .bg-token-sidebar-surface-tertiary { background-color: var(--af-hover) !important; }
 
-nav {
-  background-color: var(--af-sidebar) !important;
-  border-color: var(--af-border) !important;
-}
-nav a,
-nav button { color: var(--af-text) !important; }
-nav a:hover,
-nav button:hover { background-color: var(--af-hover) !important; }
-nav [aria-current="page"],
-nav [data-active="true"] { background-color: var(--af-surface-2) !important; }
+nav { background-color: var(--af-sidebar) !important; border-color: var(--af-border) !important; }
+nav a, nav button { color: var(--af-text) !important; }
+nav a:hover, nav button:hover { background-color: var(--af-hover) !important; }
+nav [aria-current="page"], nav [data-active="true"] { background-color: var(--af-surface-2) !important; }
 
-/* The sidebar account footer has its own surface in ChatGPT and can retain a
- * dark-mode background even when the rest of a custom light theme is correct. */
 [data-testid="accounts-profile-button"] {
   background: transparent !important;
   background-color: transparent !important;
   color: var(--af-text) !important;
   box-shadow: none !important;
 }
-
-[data-testid="accounts-profile-button"]:hover {
-  background: var(--af-hover) !important;
-  background-color: var(--af-hover) !important;
-}
-
+[data-testid="accounts-profile-button"]:hover { background: var(--af-hover) !important; }
 [data-testid="accounts-profile-button"] *,
-[data-testid="accounts-profile-button"] .text-token-text-primary {
-  color: var(--af-text) !important;
-}
-
+[data-testid="accounts-profile-button"] .text-token-text-primary { color: var(--af-text) !important; }
 [data-testid="accounts-profile-button"] .text-token-text-secondary,
-[data-testid="accounts-profile-button"] .text-token-text-tertiary {
-  color: var(--af-muted) !important;
-}
-
+[data-testid="accounts-profile-button"] .text-token-text-tertiary { color: var(--af-muted) !important; }
 [data-testid="accounts-profile-button"] svg,
-[data-testid="accounts-profile-button"] svg * {
-  color: var(--af-text-secondary) !important;
-  fill: currentColor !important;
-  stroke: currentColor !important;
-}
+[data-testid="accounts-profile-button"] svg * { color: var(--af-text-secondary) !important; fill: currentColor !important; stroke: currentColor !important; }
 
 .text-token-text-primary { color: var(--af-text) !important; }
 .text-token-text-secondary { color: var(--af-text-secondary) !important; }
 .text-token-text-tertiary { color: var(--af-muted) !important; }
-[data-message-author-role="assistant"],
-[data-message-author-role="user"],
-.markdown,
-.prose { color: var(--af-text) !important; }
+[data-message-author-role="assistant"], [data-message-author-role="user"], .markdown, .prose { color: var(--af-text) !important; }
+.markdown strong, .prose strong, .markdown b, .prose b { color: var(--af-text) !important; }
+.markdown a, .prose a { color: var(--af-accent) !important; }
 
-/* Prose-invert stays active because ChatGPT keeps the root .dark class even
- * when our selected custom theme is light. Override elements that otherwise
- * keep dark-mode prose colours such as pure-white bold text. */
-.markdown strong,
-.prose strong,
-.markdown b,
-.prose b {
-  color: var(--af-text) !important;
-}
-
-.markdown a,
-.prose a {
-  color: var(--af-accent) !important;
-}
-
-/* The captured DOM exposes a stable user-message-bubble-color class. */
 .user-message-bubble-color,
 [data-message-author-role="user"] .user-message-bubble-color {
   background: var(--af-surface-2) !important;
@@ -252,9 +189,6 @@ nav [data-active="true"] { background-color: var(--af-surface-2) !important; }
   color: var(--af-text) !important;
 }
 
-/* The header action group uses ChatGPT's translucent-surface, whose native
- * dark-mode values remain active on light custom themes. Theme the container
- * and its two visible controls explicitly. */
 #conversation-header-actions {
   background: var(--af-surface) !important;
   background-color: var(--af-surface) !important;
@@ -263,39 +197,69 @@ nav [data-active="true"] { background-color: var(--af-surface-2) !important; }
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
-
 #conversation-header-actions::before,
-#conversation-header-actions::after {
-  background: none !important;
-  box-shadow: none !important;
-}
-
+#conversation-header-actions::after { background: none !important; box-shadow: none !important; }
 #conversation-header-actions [data-testid="share-chat-button"],
-#conversation-header-actions [data-testid="conversation-options-button"] {
-  background: transparent !important;
+#conversation-header-actions [data-testid="conversation-options-button"] { background: transparent !important; color: var(--af-text) !important; }
+#conversation-header-actions [data-testid="share-chat-button"]:hover,
+#conversation-header-actions [data-testid="conversation-options-button"]:hover { background: var(--af-hover) !important; color: var(--af-text) !important; }
+
+/* Work-mode segmented control, detected from its Chat/Work controls. */
+.af-mode-switcher {
+  background: var(--af-surface) !important;
+  background-color: var(--af-surface) !important;
+  border: 1px solid var(--af-border) !important;
+  box-shadow: none !important;
   color: var(--af-text) !important;
 }
-
-#conversation-header-actions [data-testid="share-chat-button"]:hover,
-#conversation-header-actions [data-testid="conversation-options-button"]:hover {
+.af-mode-switcher .af-mode-option {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--af-text-secondary) !important;
+  box-shadow: none !important;
+}
+.af-mode-switcher .af-mode-option:hover {
   background: var(--af-hover) !important;
   color: var(--af-text) !important;
 }
-
-[data-composer-surface="true"] {
-  background: var(--af-surface) !important;
-  border-color: var(--af-border) !important;
-}
-[data-composer-surface="true"] > div { background-image: none !important; }
-textarea,
-[contenteditable="true"] {
+.af-mode-switcher .af-mode-option.af-mode-active {
+  background: var(--af-surface-2) !important;
+  background-color: var(--af-surface-2) !important;
   color: var(--af-text) !important;
-  caret-color: var(--af-accent) !important;
 }
+
+/* Work-mode toolbar below the composer: Project / Files / Plugins / desktop. */
+.af-work-toolbar {
+  background: var(--af-surface) !important;
+  background-color: var(--af-surface) !important;
+  border-color: var(--af-border) !important;
+  box-shadow: none !important;
+  color: var(--af-text-secondary) !important;
+}
+.af-work-toolbar a,
+.af-work-toolbar button,
+.af-work-toolbar [role="button"] {
+  background: transparent !important;
+  color: var(--af-text-secondary) !important;
+}
+.af-work-toolbar a:hover,
+.af-work-toolbar button:hover,
+.af-work-toolbar [role="button"]:hover {
+  background: var(--af-hover) !important;
+  color: var(--af-text) !important;
+}
+.af-work-toolbar svg,
+.af-work-toolbar svg * {
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+[data-composer-surface="true"] { background: var(--af-surface) !important; border-color: var(--af-border) !important; }
+[data-composer-surface="true"] > div { background-image: none !important; }
+textarea, [contenteditable="true"] { color: var(--af-text) !important; caret-color: var(--af-accent) !important; }
 textarea::placeholder { color: var(--af-muted) !important; }
 
-#thread-bottom,
-#thread-bottom-container {
+#thread-bottom, #thread-bottom-container {
   background: var(--af-main) !important;
   background-color: var(--af-main) !important;
   background-image: none !important;
@@ -303,7 +267,6 @@ textarea::placeholder { color: var(--af-muted) !important; }
   mask-image: none !important;
   -webkit-mask-image: none !important;
 }
-
 #thread-bottom-container::before,
 #thread-bottom-container::after {
   background: none !important;
@@ -312,42 +275,24 @@ textarea::placeholder { color: var(--af-muted) !important; }
   mask-image: none !important;
   -webkit-mask-image: none !important;
 }
-
 [data-testid="thread-disclaimer"] .rounded-full {
   background: transparent !important;
   background-color: transparent !important;
   box-shadow: none !important;
 }
-
 [data-testid="thread-disclaimer"] .text-token-text-tertiary,
-[data-testid="thread-disclaimer"] .text-caption-regular {
-  color: var(--af-muted) !important;
-}
+[data-testid="thread-disclaimer"] .text-caption-regular { color: var(--af-muted) !important; }
 
-[role="menu"],
-[role="listbox"],
-[role="dialog"] {
+[role="menu"], [role="listbox"], [role="dialog"] {
   background-color: var(--af-surface) !important;
   color: var(--af-text) !important;
   border-color: var(--af-border) !important;
 }
-[role="menuitem"]:hover,
-[role="option"]:hover { background-color: var(--af-hover) !important; }
+[role="menuitem"]:hover, [role="option"]:hover { background-color: var(--af-hover) !important; }
+input, select { background-color: var(--af-surface) !important; color: var(--af-text) !important; border-color: var(--af-border) !important; }
+.border-token-border-light, .border-token-border-medium { border-color: var(--af-border) !important; }
 
-input,
-select {
-  background-color: var(--af-surface) !important;
-  color: var(--af-text) !important;
-  border-color: var(--af-border) !important;
-}
-
-.border-token-border-light,
-.border-token-border-medium { border-color: var(--af-border) !important; }
-
-.af-code-frame {
-  border-color: var(--af-code-border) !important;
-}
-
+.af-code-frame { border-color: var(--af-code-border) !important; }
 .af-code-block {
   --code-block-surface: var(--af-code-background) !important;
   --gray-950: var(--af-code-background) !important;
@@ -365,41 +310,20 @@ select {
   background-color: var(--af-code-background) !important;
   color: var(--af-code-foreground) !important;
 }
-
-.af-code-block .af-code-header {
-  color: var(--af-code-foreground) !important;
-  opacity: 1 !important;
-}
-
-.af-code-block .af-code-header > div {
-  background: var(--af-code-header) !important;
-  background-color: var(--af-code-header) !important;
-  color: var(--af-code-foreground) !important;
-}
-
+.af-code-block .af-code-header { color: var(--af-code-foreground) !important; opacity: 1 !important; }
+.af-code-block .af-code-header > div { background: var(--af-code-header) !important; color: var(--af-code-foreground) !important; }
 .af-code-block .af-code-header *,
 .af-code-block .af-code-header .text-token-text-primary,
 .af-code-block .af-code-header .text-token-text-secondary,
-.af-code-block .af-code-header .text-token-text-tertiary {
-  color: var(--af-code-foreground) !important;
-  opacity: 1 !important;
-}
-
+.af-code-block .af-code-header .text-token-text-tertiary { color: var(--af-code-foreground) !important; opacity: 1 !important; }
 .af-code-block #code-block-viewer,
 .af-code-block .cm-editor,
 .af-code-block .cm-scroller,
-.af-code-block .cm-content {
-  background-color: var(--af-code-background) !important;
-  color: var(--af-code-foreground) !important;
-}
-
+.af-code-block .cm-content { background-color: var(--af-code-background) !important; color: var(--af-code-foreground) !important; }
 .af-code-block pre,
 .af-code-block code,
 .af-code-block pre code,
-.af-code-block pre code * {
-  background-color: transparent !important;
-}
-
+.af-code-block pre code * { background-color: transparent !important; }
 .af-code-block .token.comment { color: var(--af-code-muted) !important; }
 .af-code-block .token.keyword { color: var(--af-code-purple) !important; }
 .af-code-block .token.string { color: var(--af-code-green) !important; }
@@ -411,19 +335,11 @@ select {
 .af-code-block .token.property { color: var(--af-code-cyan) !important; }
 .af-code-block .token.regex,
 .af-code-block .token.builtin { color: var(--af-code-red) !important; }
-
-:not(pre) > code {
-  background-color: var(--af-surface) !important;
-  color: var(--af-text) !important;
-}
+:not(pre) > code { background-color: var(--af-surface) !important; color: var(--af-text) !important; }
 
 table { border-color: var(--af-border) !important; }
-th {
-  background-color: var(--af-surface) !important;
-  border-color: var(--af-border) !important;
-}
+th { background-color: var(--af-surface) !important; border-color: var(--af-border) !important; }
 td { border-color: var(--af-border) !important; }
-
 * { scrollbar-color: var(--af-border) transparent; }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -433,14 +349,7 @@ td { border-color: var(--af-border) !important; }
   border: 2px solid transparent;
   background-clip: padding-box;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: var(--af-text-secondary);
-  background-clip: padding-box;
-}
-
-::selection {
-  background: var(--af-accent);
-  color: var(--af-main);
-}
+::-webkit-scrollbar-thumb:hover { background: var(--af-text-secondary); background-clip: padding-box; }
+::selection { background: var(--af-accent); color: var(--af-main); }
 `;
 }
