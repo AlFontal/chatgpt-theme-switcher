@@ -4,6 +4,7 @@
 // @version      1.4.10
 // @description  Custom themes for ChatGPT with a persistent theme switcher.
 // @author       AlFontal
+// @license      MIT
 // @match        https://chatgpt.com/*
 // @run-at       document-start
 // @grant        none
