@@ -672,6 +672,17 @@ const LEGACY_MARKER_CLASSES = [
   "af-permission-secondary"
 ];
 
+const PERMISSION_STYLE_PROPERTIES = [
+  "background",
+  "background-color",
+  "background-image",
+  "color",
+  "border-color",
+  "box-shadow",
+  "backdrop-filter",
+  "-webkit-backdrop-filter"
+];
+
 function installUIStyle() {
   if (document.getElementById(UI_STYLE_ID)) return;
 
@@ -688,7 +699,21 @@ function getCurrentThemeId() {
   return localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;
 }
 
+function clearPermissionInlineStyles() {
+  document
+    .querySelectorAll(
+      ".af-permission-dialog, .af-permission-primary, .af-permission-secondary"
+    )
+    .forEach(element => {
+      for (const property of PERMISSION_STYLE_PROPERTIES) {
+        element.style.removeProperty(property);
+      }
+    });
+}
+
 function clearDynamicThemeMarkers() {
+  clearPermissionInlineStyles();
+
   for (const className of LEGACY_MARKER_CLASSES) {
     document.querySelectorAll(`.${className}`).forEach(element => {
       element.classList.remove(className);
@@ -734,6 +759,10 @@ function markCodeBlocks() {
   }
 }
 
+function setImportantStyle(element, property, value) {
+  element.style.setProperty(property, value, "important");
+}
+
 function markPermissionDialogs() {
   if (getCurrentThemeId() === "chatgpt-default") return;
 
@@ -747,14 +776,39 @@ function markPermissionDialogs() {
     if (!isPermissionDialog) continue;
 
     dialog.classList.add("af-permission-dialog");
+    setImportantStyle(dialog, "background", "var(--af-surface)");
+    setImportantStyle(dialog, "background-color", "var(--af-surface)");
+    setImportantStyle(dialog, "background-image", "none");
+    setImportantStyle(dialog, "color", "var(--af-text)");
+    setImportantStyle(dialog, "border-color", "var(--af-border)");
+    setImportantStyle(dialog, "box-shadow", "0 18px 60px rgba(0,0,0,.22)");
+    setImportantStyle(dialog, "backdrop-filter", "none");
+    setImportantStyle(dialog, "-webkit-backdrop-filter", "none");
+
+    for (const child of dialog.querySelectorAll("h1, h2, h3, p, span, a, div")) {
+      if (child.closest("button")) continue;
+      setImportantStyle(child, "color", "inherit");
+    }
+
+    for (const divider of dialog.querySelectorAll("hr, [class*='border']")) {
+      setImportantStyle(divider, "border-color", "var(--af-border)");
+    }
 
     for (const button of dialog.querySelectorAll("button")) {
       const label = (button.textContent || "").trim();
+      setImportantStyle(button, "box-shadow", "none");
+      setImportantStyle(button, "border-color", "var(--af-border)");
 
       if (/^Allow once$/i.test(label)) {
         button.classList.add("af-permission-primary");
+        setImportantStyle(button, "background", "var(--af-accent)");
+        setImportantStyle(button, "background-color", "var(--af-accent)");
+        setImportantStyle(button, "color", "var(--af-main)");
       } else if (/^(Always allow|Deny)$/i.test(label)) {
         button.classList.add("af-permission-secondary");
+        setImportantStyle(button, "background", "var(--af-surface-2)");
+        setImportantStyle(button, "background-color", "var(--af-surface-2)");
+        setImportantStyle(button, "color", "var(--af-text)");
       }
     }
   }
