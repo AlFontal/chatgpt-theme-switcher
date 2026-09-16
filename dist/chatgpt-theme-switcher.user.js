@@ -401,12 +401,57 @@ nav [data-active="true"] { background-color: var(--af-surface-2) !important; }
 .markdown,
 .prose { color: var(--af-text) !important; }
 
+/* Prose-invert stays active because ChatGPT keeps the root .dark class even
+ * when our selected custom theme is light. Override elements that otherwise
+ * keep dark-mode prose colours such as pure-white bold text. */
+.markdown strong,
+.prose strong,
+.markdown b,
+.prose b {
+  color: var(--af-text) !important;
+}
+
+.markdown a,
+.prose a {
+  color: var(--af-accent) !important;
+}
+
 /* The captured DOM exposes a stable user-message-bubble-color class. */
 .user-message-bubble-color,
 [data-message-author-role="user"] .user-message-bubble-color {
   background: var(--af-surface-2) !important;
   background-color: var(--af-surface-2) !important;
   background-image: none !important;
+  color: var(--af-text) !important;
+}
+
+/* The header action group uses ChatGPT's translucent-surface, whose native
+ * dark-mode values remain active on light custom themes. Theme the container
+ * and its two visible controls explicitly. */
+#conversation-header-actions {
+  background: var(--af-surface) !important;
+  background-color: var(--af-surface) !important;
+  border: 1px solid var(--af-border) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+#conversation-header-actions::before,
+#conversation-header-actions::after {
+  background: none !important;
+  box-shadow: none !important;
+}
+
+#conversation-header-actions [data-testid="share-chat-button"],
+#conversation-header-actions [data-testid="conversation-options-button"] {
+  background: transparent !important;
+  color: var(--af-text) !important;
+}
+
+#conversation-header-actions [data-testid="share-chat-button"]:hover,
+#conversation-header-actions [data-testid="conversation-options-button"]:hover {
+  background: var(--af-hover) !important;
   color: var(--af-text) !important;
 }
 
@@ -447,11 +492,18 @@ textarea::placeholder { color: var(--af-muted) !important; }
   -webkit-mask-image: none !important;
 }
 
-/* Disclaimer pill above the composer. Its native shadow references the stock
- * surface and can become a dark halo on a light custom theme. */
-#thread-bottom-container .bg-token-main-surface-primary.rounded-full {
-  background: var(--af-main) !important;
-  box-shadow: 0 0 8px 8px var(--af-main) !important;
+/* The disclaimer has its own rounded background and a stock shadow declared
+ * directly in its class list. Target the real data-testid instead of assuming
+ * it lives inside #thread-bottom-container. */
+[data-testid="thread-disclaimer"] .rounded-full {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+[data-testid="thread-disclaimer"] .text-token-text-tertiary,
+[data-testid="thread-disclaimer"] .text-caption-regular {
+  color: var(--af-muted) !important;
 }
 
 [role="menu"],
