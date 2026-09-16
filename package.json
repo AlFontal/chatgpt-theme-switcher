@@ -1,0 +1,12 @@
+{
+  "name": "chatgpt-theme-switcher",
+  "version": "1.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs --check",
+    "release:patch": "npm version patch --no-git-tag-version && npm run build",
+    "release:minor": "npm version minor --no-git-tag-version && npm run build"
+  }
+}
