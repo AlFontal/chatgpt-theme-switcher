@@ -14,8 +14,6 @@ A Tampermonkey userscript that adds custom themes and a persistent theme switche
 
 [![ChatGPT Theme Switcher demo](assets/theme-switcher-demo.gif)](assets/theme-switcher-demo.mp4)
 
-The recording keeps project and chat sections collapsed and uses a purpose-built example, so no conversation titles or message history are exposed. Click the preview to open the compressed MP4.
-
 ## Install
 
 1. Install [Tampermonkey](https://www.tampermonkey.net/).
@@ -44,7 +42,7 @@ Opening that URL with Tampermonkey installed should prompt you to install the sc
 
 ## Development
 
-No npm dependencies are required. Node 22 is used by CI to build the userscript from the source files in `src/`.
+No npm dependencies are required. Node 22 is only used by CI to build the userscript from the source files in `src/`.
 
 ```bash
 npm run build
